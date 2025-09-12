@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .container { padding: 20px; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 5px; }
+        .button { background-color: #4F46E5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Your Image Set is Ready!</h2>
+        <p>Hello,</p>
+        <p>Your request for images with the query "<strong>{{ query }}</strong>" has been successfully processed.</p>
+        <p>You can view and download your curated images by clicking the button below:</p>
+        <p style="text-align: center;">
+            <a href="{{ results_url }}" class="button">View My Images</a>
+        </p>
+        <p>Thank you for using our service!</p>
+    </div>
+</body>
+</html>

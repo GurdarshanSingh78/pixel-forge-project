@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+jinja2
+pydantic
+pydantic-settings
+sqlalchemy
+requests
+Pillow
+imagehash
+transformers
+torch
+email-validator
+fastapi-mail
+pexels-api
+apscheduler
+fastapi-apscheduler
+gunicorn

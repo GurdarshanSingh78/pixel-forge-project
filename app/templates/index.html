@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Forge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* All of your beautiful CSS remains the same */
+        :root { --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .hidden { display: none; }
+        .main-background {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -10;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
+        }
+        .background-pattern {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.2) 0%, transparent 40%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+            animation: patternFloat 20s ease-in-out infinite;
+        }
+        .floating-shapes .shape {
+            position: absolute; border-radius: 50%;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            animation: float 12s ease-in-out infinite;
+        }
+        .shape:nth-child(1) { width: 80px; height: 80px; top: 10%; left: 10%; animation-delay: 0s; }
+        .shape:nth-child(2) { width: 120px; height: 120px; top: 70%; left: 80%; animation-delay: -2s; animation-duration: 15s; }
+        .shape:nth-child(3) { width: 60px; height: 60px; top: 30%; left: 85%; animation-delay: -4s; }
+        .shape:nth-child(4) { width: 100px; height: 100px; top: 80%; left: 5%; animation-delay: -1s; animation-duration: 14s; }
+        .shape:nth-child(5) { width: 140px; height: 140px; top: 20%; left: 60%; animation-delay: -3s; }
+        .glass-container {
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37), 0 2px 8px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+        }
+        .form-input {
+            background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.2); color: white; transition: all 0.3s ease;
+        }
+        .form-input::placeholder { color: rgba(255, 255, 255, 0.6); }
+        .form-input:focus {
+            background: rgba(0, 0, 0, 0.25); border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.4); outline: none;
+        }
+        .form-label { color: rgba(255, 255, 255, 0.9); font-weight: 500; }
+        .premium-button {
+            background: var(--primary-gradient); border: none; color: white; font-weight: 700;
+            transition: all 0.3s ease; position: relative; overflow: hidden;
+        }
+        .premium-button::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+        .premium-button:hover::before { left: 100%; }
+        .premium-button:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4); }
+        .logo-container {
+            animation: logoGlow 3s ease-in-out infinite alternate;
+            transition: transform 0.3s ease;
+        }
+        .logo-container:hover { transform: scale(1.1); }
+        .main-title {
+            background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-family: 'Outfit', sans-serif; font-weight: 700; letter-spacing: -1px;
+        }
+        .subtitle { color: rgba(255, 255, 255, 0.8); }
+        .message-success {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(22, 163, 74, 0.2) 100%);
+            border: 1px solid rgba(34, 197, 94, 0.3); color: #dcfce7; backdrop-filter: blur(10px);
+        }
+        .message-error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.3); color: #fecaca; backdrop-filter: blur(10px);
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(10deg); } }
+        @keyframes patternFloat { 0%, 100% { transform: translate(0, 0) scale(1); } 33% { transform: translate(30px, -30px) scale(1.1); } 66% { transform: translate(-20px, 20px) scale(0.9); } }
+        @keyframes logoGlow {
+            from { box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4); transform: scale(1); }
+            to { box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6), 0 0 20px rgba(102, 126, 234, 0.3); transform: scale(1.05); }
+        }
+        .animate-fadeIn { animation: fadeIn 0.6s ease-out forwards; }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="main-background">
+        <div class="background-pattern"></div>
+        <div class="floating-shapes">
+            <div class="shape"></div><div class="shape"></div><div class="shape"></div><div class="shape"></div><div class="shape"></div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="min-h-screen flex items-center justify-center p-4 relative">
+        <div class="glass-container w-full max-w-lg mx-auto p-8 sm:p-12 rounded-3xl animate-fadeIn">
+            
+            <div class="text-center mb-8">
+                <div class="logo-container w-24 h-24 rounded-full flex items-center justify-center p-2 mx-auto mb-6 bg-white bg-opacity-10">
+                    <img src="/static/img/logo.png" alt="AI Image Fetcher Logo" class="w-full h-full object-cover rounded-full shadow-inner">
+                </div>
+                <h1 class="main-title text-4xl">PixelForge</h1>
+                <p class="subtitle text-lg">Professional Bulk Image Collection Platform</p>
+            </div>
+
+            <form id="image-request-form" class="space-y-6">
+                <div>
+                    <label for="query" class="form-label block mb-2">Search Query</label>
+                    <input type="text" id="query" name="query" required autofocus placeholder="e.g., 'Misty mountains at dawn'" class="form-input w-full px-4 py-3 rounded-xl">
+                    <p id="query-error" class="text-red-300 text-sm mt-2 hidden">Please enter a valid query.</p>
+                </div>
+                <div>
+                    <label for="email" class="form-label block mb-2">Your Email</label>
+                    <input type="email" id="email" name="email" required placeholder="you@example.com" class="form-input w-full px-4 py-3 rounded-xl">
+                    <p id="email-error" class="text-red-300 text-sm mt-2 hidden">Enter a valid email address.</p>
+                </div>
+                <div>
+                    <label for="count" class="form-label block mb-2">Number of Images (Max 1000)</label>
+                    <input type="number" id="count" name="count" required min="1" max="1000" placeholder="Enter a number" class="form-input w-full px-4 py-3 rounded-xl">
+                    <p class="text-blue-200 text-sm mt-2">⚡ Higher numbers may take longer to process.</p>
+                    <p id="count-error" class="text-red-300 text-sm mt-2 hidden">Please request between 1 and 1000 images.</p>
+                </div>
+                <div class="pt-4">
+                    <button type="submit" id="submit-btn" class="premium-button w-full py-4 px-6 rounded-xl">
+                        <span class="relative z-10">Launch Image Collection</span>
+                        <div id="spinner" class="hidden absolute inset-0 flex items-center justify-center">
+                            <svg class="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
+                        </div>
+                    </button>
+                </div>
+            </form>
+            <div id="message-box" class="mt-6 hidden p-6 rounded-xl text-center"></div>
+            
+            <!-- --- START: Meet the Team Section (Updated) --- -->
+            <div class="mt-12 pt-8 border-t border-gray-200 border-opacity-20">
+                <h2 class="text-center text-2xl font-bold main-title mb-6">Our Mentor</h2>
+                
+                <!-- Mentor Section -->
+                <div class="flex justify-center mb-10">
+                    <div class="text-center text-white transition-transform hover:scale-105">
+                        <img src="/static/img/PS RANA.jpeg" alt="Project Mentor" class="w-32 h-32 rounded-full mx-auto mb-3 border-4 border-white border-opacity-30 shadow-lg object-cover">
+                        <h3 class="font-bold text-xl">Dr. Prashant Singh Rana</h3>
+                        <p class="text-sm opacity-80">Project Guide</p>
+                    </div>
+                </div>
+
+                <h2 class="text-center text-2xl font-bold main-title mb-8">Meet the Team</h2>
+                <!-- Team Grid -->
+    <div class="grid grid-cols-2 gap-x-6 gap-y-8">
+        
+        <!-- Team Member 1 -->
+        <div class="text-center text-white transition-transform hover:scale-105">
+            <img src="/static/img/GS.png" alt="Team Member Gurdarshan Singh" class="w-24 h-24 rounded-full mx-auto mb-3 border-4 border-white border-opacity-30 shadow-lg object-cover">
+            <h3 class="font-bold text-lg">Gurdarshan Singh</h3>
+            <p class="text-sm opacity-80">Lead Developer</p>
+            <div class="flex justify-center gap-4 mt-3">
+                <a href="https://www.linkedin.com/in/gurdarshan-singh-9b11052b3" target="_blank" class="text-white opacity-80 hover:opacity-100 transition-transform hover:scale-110">
+    <!-- LinkedIn SVG Icon -->
+    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+</a>
+                <a href="https://www.instagram.com/gurdarshan.singh._/" target="_blank" class="text-white opacity-80 hover:opacity-100 transition-transform hover:scale-110">
+                    <!-- Instagram SVG Icon -->
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.585-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.585-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.585.069-4.85c.149-3.225 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.058 1.281-.072 1.689-.072 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.28.058 1.688.072 4.947.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.058-1.28.072-1.688.072-4.947s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.28-.058-1.688-.072-4.947-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <!-- Team Member 2 -->
+        <div class="text-center text-white transition-transform hover:scale-105">
+            <img src="/static/img/SS.JPEG" alt="Team Member Shubhkaram Singh" class="w-24 h-24 rounded-full mx-auto mb-3 border-4 border-white border-opacity-30 shadow-lg object-cover">
+            <h3 class="font-bold text-lg">Shubhkaram Singh</h3>
+            <p class="text-sm opacity-80">AI/ML Engineer</p>
+             <div class="flex justify-center gap-4 mt-3">
+                <a href="https://www.linkedin.com/in/shubhkaram-singh-734051208/" target="_blank" class="text-white opacity-80 hover:opacity-100 transition-transform hover:scale-110">
+                    <!-- LinkedIn SVG Icon -->
+                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+                <a href="https://www.instagram.com/shubh_bhangu_24/" target="_blank" class="text-white opacity-80 hover:opacity-100 transition-transform hover:scale-110">
+                    <!-- Instagram SVG Icon -->
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.585-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.585-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.585.069-4.85c.149-3.225 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.058 1.281-.072 1.689-.072 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.28.058 1.688.072 4.947.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.058-1.28.072-1.688.072-4.947s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.28-.058-1.688-.072-4.947-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z"/></svg>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Team Member 3 -->
+        <div class="text-center text-white transition-transform hover:scale-105">
+            <img src="/static/img/IS.jpg" alt="Team Member Ishanpreet Singh" class="w-24 h-24 rounded-full mx-auto mb-3 border-4 border-white border-opacity-30 shadow-lg object-cover">
+            <h3 class="font-bold text-lg">Ishanpreet Singh</h3>
+            <p class="text-sm opacity-80">UI/UX Designer</p>
+             <div class="flex justify-center gap-4 mt-3">
+                <a href="https://www.linkedin.com/in/ishanpreet-singh-4ab0aa26b/" target="_blank" class="text-white opacity-80 hover:opacity-100 transition-transform hover:scale-110">
+                    <!-- LinkedIn SVG Icon -->
+                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+                <a href="https://www.instagram.com/_ishaanpreet_/" target="_blank" class="text-white opacity-80 hover:opacity-100 transition-transform hover:scale-110">
+                    <!-- Instagram SVG Icon -->
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.585-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.585-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.585.069-4.85c.149-3.225 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.058 1.281-.072 1.689-.072 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.28.058 1.688.072 4.947.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.058-1.28.072-1.688.072-4.947s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.28-.058-1.688-.072-4.947-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z"/></svg>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Team Member 4 -->
+        <div class="text-center text-white transition-transform hover:scale-105">
+            <img src="/static/img/PS.JPEG" alt="Team Member Parmeet Singh" class="w-24 h-24 rounded-full mx-auto mb-3 border-4 border-white border-opacity-30 shadow-lg object-cover">
+            <h3 class="font-bold text-lg">Parmeet Singh</h3>
+            <p class="text-sm opacity-80">Backend Specialist</p>
+             <div class="flex justify-center gap-4 mt-3">
+                <a href="https://www.linkedin.com/in/parmeet-singh-9338bb28b/" target="_blank" class="text-white opacity-80 hover:opacity-100 transition-transform hover:scale-110">
+                    <!-- LinkedIn SVG Icon -->
+                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+                <a href="https://www.instagram.com/parmeet_ss1927/" target="_blank" class="text-white opacity-80 hover:opacity-100 transition-transform hover:scale-110">
+                    <!-- Instagram SVG Icon -->
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.585-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.585-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.585.069-4.85c.149-3.225 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.058 1.281-.072 1.689-.072 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.28.058 1.688.072 4.947.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.058-1.28.072-1.688.072-4.947s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.28-.058-1.688-.072-4.947-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- --- END: Meet the Team Section --- -->
+
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('image-request-form');
+        const messageBox = document.getElementById('message-box');
+        const submitBtn = document.getElementById('submit-btn');
+        const spinner = document.getElementById('spinner');
+        const btnText = submitBtn ? submitBtn.querySelector('span') : null;
+
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const query = document.getElementById('query').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const count = parseInt(document.getElementById('count').value, 10);
+            document.querySelectorAll('#query-error, #email-error, #count-error').forEach(el => el.classList.add('hidden'));
+            messageBox.classList.add('hidden');
+            let hasError = false;
+            if (!query) { document.getElementById('query-error').classList.remove('hidden'); hasError = true; }
+            if (!email.includes('@')) { document.getElementById('email-error').classList.remove('hidden'); hasError = true; }
+            if (isNaN(count) || count < 1 || count > 1000) { document.getElementById('count-error').classList.remove('hidden'); hasError = true; }
+            if (hasError) return;
+            submitBtn.disabled = true;
+            spinner.classList.remove('hidden');
+            if (btnText) { btnText.style.opacity = '0'; }
+            messageBox.innerHTML = ''; 
+            try {
+                const response = await fetch('/api/request-images', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query, email, count })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    let timeWarning = '';
+                    if (count > 100) { timeWarning = `<p class="text-sm opacity-80 mt-2 font-semibold">Please be patient, this large job may take several minutes to process.</p>`; }
+                    const successMessage = `
+                        <div class="flex items-center justify-center mb-3"><div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-xl shadow-lg">✓</div></div>
+                        <p class="font-bold text-lg mb-2">Job Accepted</p>
+                        <p class="text-sm opacity-90">The results will be delivered to your email shortly.</p>
+                        ${timeWarning}
+                        <p class="text-xs opacity-75 mt-2">Please check your inbox (and spam folder).</p>`;
+                    messageBox.innerHTML = successMessage;
+                    messageBox.className = 'message-success mt-6 p-6 rounded-xl text-center animate-fadeIn';
+                    form.reset();
+                } else {
+                     messageBox.innerHTML = `<div class="flex items-center justify-center mb-3"><div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white text-xl shadow-lg">✕</div></div><p class="font-semibold">${data.detail || 'Something went wrong.'}</p>`;
+                    messageBox.className = 'message-error mt-6 p-6 rounded-xl text-center animate-fadeIn';
+                }
+            } catch (err) {
+                messageBox.innerHTML = `<div class="flex items-center justify-center mb-3"><div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white text-xl shadow-lg">⚠</div></div><p class="font-semibold">Server unreachable. Try again later.</p>`;
+                messageBox.className = 'message-error mt-6 p-6 rounded-xl text-center animate-fadeIn';
+            }
+            messageBox.classList.remove('hidden');
+            submitBtn.disabled = false;
+            spinner.classList.add('hidden');
+            if (btnText) { btnText.style.opacity = '1'; }
+        });
+    </script>
+</body>
+</html>
+
