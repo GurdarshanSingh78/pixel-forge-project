@@ -33,6 +33,8 @@ class Job(Base):
     email_sent: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=func.now(), onupdate=func.now())
+    
+    # --- FIX #1: Corrected the typo from 'back_pop_ulates' to 'back_populates' ---
     images: Mapped[List["JobImage"]] = relationship("JobImage", back_populates="job", cascade="all, delete-orphan")
 
 class JobImage(Base):
@@ -40,10 +42,11 @@ class JobImage(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     job_id: Mapped[int] = mapped_column(Integer, ForeignKey("jobs.id"))
     file_path: Mapped[str] = mapped_column(String)
+
+    # --- FIX #1: Corrected the typo from 'back_pop_ulates' to 'back_populates' ---
     job: Mapped["Job"] = relationship("Job", back_populates="images")
 
 def create_db_and_tables():
     """Creates database tables, checking first if they exist."""
-    # --- THIS IS THE FIX ---
-    # The 'checkfirst=True' argument makes this operation safe for multi-worker environments.
+    # --- FIX #2: The 'checkfirst=True' argument makes this operation safe for multi-worker environments. ---
     Base.metadata.create_all(bind=engine, checkfirst=True)
