@@ -4,7 +4,8 @@ from fastapi.templating import Jinja2Templates
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from app.routes import images
 from app.core.paths import TEMPLATES_DIR, DOWNLOADS_DIR
-from app.services.email_scheduler import check_and_send_notifications
+# --- FIX: Import the new job scheduler function ---
+from app.services.job_scheduler import check_for_jobs
 
 app = FastAPI()
 
@@ -16,9 +17,9 @@ scheduler = AsyncIOScheduler()
 
 @app.on_event("startup")
 def on_startup():
-    # --- FIX: Removed all setup logic from here ---
-    print("INFO:     Starting email scheduler...")
-    scheduler.add_job(check_and_send_notifications, "interval", seconds=30, id="email_scheduler_job", replace_existing=True)
+    # The startup logic is now very clean.
+    print("INFO:     Starting background job scheduler...")
+    scheduler.add_job(check_for_jobs, "interval", seconds=30, id="main_job_worker", replace_existing=True)
     scheduler.start()
     print("INFO:     Startup complete.")
 
@@ -30,3 +31,4 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 @app.get("/", include_in_schema=False)
 async def serve_home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
