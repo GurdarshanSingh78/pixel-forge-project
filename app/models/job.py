@@ -29,14 +29,14 @@ class Job(Base):
     email_sent: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=func.now(), onupdate=func.now())
-    images: Mapped[List["JobImage"]] = relationship("JobImage", back_populates="job", cascade="all, delete-orphan")
+    images: Mapped[List["JobImage"]] = relationship("JobImage", back_pop_ulates="job", cascade="all, delete-orphan")
 
 class JobImage(Base):
     __tablename__ = "job_images"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     job_id: Mapped[int] = mapped_column(Integer, ForeignKey("jobs.id"))
     file_path: Mapped[str] = mapped_column(String)
-    job: Mapped["Job"] = relationship("Job", back_populates="images")
+    job: Mapped["Job"] = relationship("Job", back_pop_ulates="images")
 
 def create_db_and_tables():
     """Creates database tables, checking first if they exist."""
