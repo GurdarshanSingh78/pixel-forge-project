@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi_apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
 
 from app.models.job import create_db_and_tables
 from app.routes import images

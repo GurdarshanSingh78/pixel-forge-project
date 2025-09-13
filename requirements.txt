@@ -13,5 +13,4 @@ email-validator
 fastapi-mail
 pexels-api
 apscheduler
-fastapi-apscheduler
 gunicorn
