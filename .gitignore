@@ -1,8 +1,7 @@
 # Ignore the Python virtual environment
 venv/
 
-# Ignore the downloaded images and database
-downloads/
+# Ignore the database file, but keep downloads folder
 jobs.db
 
 # Ignore secret environment variables
