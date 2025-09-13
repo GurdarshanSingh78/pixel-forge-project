@@ -13,14 +13,10 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 class JobType(enum.Enum):
-    FREE = "free"
-    PAID = "paid"
+    FREE = "free"; PAID = "paid"
 
 class JobStatus(enum.Enum):
-    PENDING = "pending"
-    PROCESSING = "processing"
-    COMPLETED = "completed"
-    FAILED = "failed"
+    PENDING = "pending"; PROCESSING = "processing"; COMPLETED = "completed"; FAILED = "failed"
 
 class Job(Base):
     __tablename__ = "jobs"
@@ -34,7 +30,7 @@ class Job(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=func.now(), onupdate=func.now())
     
-    # --- FIX #1: Corrected the typo from 'back_pop_ulates' to 'back_populates' ---
+    # --- FIX: Corrected typo 'back_pop_ulates' to 'back_populates' ---
     images: Mapped[List["JobImage"]] = relationship("JobImage", back_populates="job", cascade="all, delete-orphan")
 
 class JobImage(Base):
@@ -42,11 +38,11 @@ class JobImage(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     job_id: Mapped[int] = mapped_column(Integer, ForeignKey("jobs.id"))
     file_path: Mapped[str] = mapped_column(String)
-
-    # --- FIX #1: Corrected the typo from 'back_pop_ulates' to 'back_populates' ---
+    
+    # --- FIX: Corrected typo 'back_pop_ulates' to 'back_populates' ---
     job: Mapped["Job"] = relationship("Job", back_populates="images")
 
 def create_db_and_tables():
-    """Creates database tables, checking first if they exist."""
-    # --- FIX #2: The 'checkfirst=True' argument makes this operation safe for multi-worker environments. ---
-    Base.metadata.create_all(bind=engine, checkfirst=True)
+    """Creates all database tables defined in this model."""
+    # We no longer need checkfirst=True because this will only run once.
+    Base.metadata.create_all(bind=engine)

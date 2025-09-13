@@ -2,38 +2,31 @@ from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from app.models.job import create_db_and_tables
 from app.routes import images
-# --- FIX: Import the new, robust paths ---
-from app.core.paths import TEMPLATES_DIR, DOWNLOADS_DIR, DATABASE_FILE, STATIC_DIR
+from app.core.paths import TEMPLATES_DIR, DOWNLOADS_DIR
 from app.services.email_scheduler import check_and_send_notifications
-
-# Create the necessary directories right at the start, before the app is configured.
-print("INFO:     Ensuring data directories exist...")
-DOWNLOADS_DIR.mkdir(parents=True, exist_ok=True)
-DATABASE_FILE.parent.mkdir(parents=True, exist_ok=True)
-print("INFO:     Data directories are ready.")
 
 app = FastAPI()
 
-# Now it is safe to mount the directories using our absolute paths.
+# Mount static and download directories
 app.mount("/downloads", StaticFiles(directory=DOWNLOADS_DIR), name="downloads")
-app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 scheduler = AsyncIOScheduler()
 
 @app.on_event("startup")
 def on_startup():
-    print("INFO:     Server starting up...")
-    create_db_and_tables()
+    # --- FIX: Removed all setup logic from here ---
+    print("INFO:     Starting email scheduler...")
     scheduler.add_job(check_and_send_notifications, "interval", seconds=30, id="email_scheduler_job", replace_existing=True)
     scheduler.start()
     print("INFO:     Startup complete.")
 
+# Include API routes
 app.include_router(images.router, prefix="/api")
 
+# Serve the main page
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 @app.get("/", include_in_schema=False)
 async def serve_home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
-
